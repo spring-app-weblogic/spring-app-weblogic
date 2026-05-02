@@ -84,3 +84,4 @@ runmqsc APPQM
 - Queue Manager: APPQM
 - Channel: APP.SVRCONN
 - Configure host and port in your client app.
+- Also make sure the application queue names will always start with APP.

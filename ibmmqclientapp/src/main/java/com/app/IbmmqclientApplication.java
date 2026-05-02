@@ -21,11 +21,17 @@ public class IbmmqclientApplication {
 	// Connection parameters
     private static final String HOST = "localhost";
     private static final int PORT = 1414;
-    private static final String QUEUE_MANAGER = "APPQM";
+    /*private static final String QUEUE_MANAGER = "APPQM";
     private static final String CHANNEL = "APP.SVRCONN";
     private static final String QUEUE_NAME = "APP.IN.QUEUE.1";
     private static final String APP_USER = "appusr";
-    private static final String APP_PASSWORD = "Pass@1234";
+    private static final String APP_PASSWORD = "Pass@1234";*/
+    private static final String QUEUE_MANAGER = "QM1";
+    private static final String CHANNEL = "DEV.APP.SVRCONN";
+    private static final String QUEUE_NAME = "DEV.QUEUE.1";
+    private static final String APP_USER = "app";
+    private static final String APP_PASSWORD = "Pass@4321";
+    private static final int n = 10;
     
     private QueueConnectionFactory factory;
     private QueueConnection connection;
@@ -41,7 +47,7 @@ public class IbmmqclientApplication {
         ((MQQueueConnectionFactory) factory).setTransportType(WMQConstants.WMQ_CM_CLIENT);
         
         connection = factory.createQueueConnection(APP_USER, APP_PASSWORD);
-        session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+        session = connection.createQueueSession(true, Session.SESSION_TRANSACTED);
         connection.start();
         
         System.out.println("Connected to IBM MQ successfully!");
@@ -89,11 +95,12 @@ public class IbmmqclientApplication {
             
             //generate message
             String message;
-            message = transactionGenerator.generateMessage();
-                        
-            // Send a message
-            client.sendMessage(message);
-
+            for(int i = 0; i< n; i++ ) {
+                message = transactionGenerator.generateMessage();
+                // Send a message
+                client.sendMessage(message);
+            }
+            
             // Receive a message
             //client.receiveMessage();
             client.commit();
