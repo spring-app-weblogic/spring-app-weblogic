@@ -21,11 +21,11 @@ public class IbmmqclientApplication {
 	// Connection parameters
     private static final String HOST = "localhost";
     private static final int PORT = 1414;
-    private static final String QUEUE_MANAGER = "QM1";
-    private static final String CHANNEL = "DEV.APP.SVRCONN";
-    private static final String QUEUE_NAME = "DEV.QUEUE.1";
-    private static final String APP_USER = "app";
-    private static final String APP_PASSWORD = "Pass@4321";
+    private static final String QUEUE_MANAGER = "APPQM";
+    private static final String CHANNEL = "APP.SVRCONN";
+    private static final String QUEUE_NAME = "APP.IN.QUEUE.1";
+    private static final String APP_USER = "appusr";
+    private static final String APP_PASSWORD = "Pass@1234";
     
     private QueueConnectionFactory factory;
     private QueueConnection connection;
@@ -98,12 +98,12 @@ public class IbmmqclientApplication {
             //client.receiveMessage();
             client.commit();
         } catch (JMSException | JsonProcessingException e) {
+            e.printStackTrace();
             try {
                 client.rollback();
             } catch (JMSException e1) {
                 e1.printStackTrace();
             }
-            e.printStackTrace();
         } finally {
             try {
                 client.disconnect();
@@ -114,11 +114,13 @@ public class IbmmqclientApplication {
     }
 
     public void commit() throws JMSException {
-        session.commit();
+        if(session!=null)
+            session.commit();
     }
 
     public void rollback() throws JMSException {
-        session.rollback();
+        if(session!=null)
+            session.rollback();
     }
 
     
