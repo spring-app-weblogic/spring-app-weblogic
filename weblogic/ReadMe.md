@@ -340,3 +340,67 @@ Configure the following connection pool properties based on environment requirem
 - Minimum Capacity
 
 > Adjust these values according to application load and performance requirements.
+
+- Once all the changes are performed go to shopping cart icon and click on commit changes.
+
+## IBM MQ Resource Adapter Configuration
+
+- IBM MQ provides a Resource Adapter which can be downloaded from its official site.  
+  Ensure that the adapter version matches the IBM MQ server version being used.
+
+- After downloading (e.g., `9.4.5.0-IBM-MQ-Java-InstallRA.jar`), extract its contents.
+
+- From the extracted files, locate and extract: `wmq.jakarta.jmsra.rar`
+
+- Navigate to the following directory: wmq.jakarta.jmsra/META-INF
+
+- Place the `weblogic-ra.xml` file (available in this repository) into this folder.
+
+- Before placing the `weblogic-ra.xml` file, update its configuration with: IBM MQ Server details, Queue details, Channel details
+
+- In `weblogic-ra.xml`, configure all queues used by the application.  
+  Also, note down the JNDI names for each queue, as they will be used in the Spring application.
+
+- For additional configuration parameters, refer to the `ra.xml` file present in the original JAR.
+
+---
+
+### Repackaging the Resource Adapter
+
+- Navigate to the extracted `wmq.jakarta.jmsra` directory and execute:
+
+```bash
+jar -cvf wmq.jakarta.jmsra.rar *
+```
+
+This creates a new wmq.jakarta.jmsra.rar file for deployment in WebLogic.
+
+### Deploying Resource Adapter in WebLogic
+
+- Login to the WebLogic Remote Console and connect to the Admin Server.
+
+- Navigate to: Edit Tree → Deployments → App Deployments
+
+- Click New and provide the following details:
+  Name: wmq.jakarta.jmsra
+  Targets: Managed Server
+  Source: Upload the generated wmq.jakarta.jmsra.rar file
+- Keep other configurations as default and click Create.
+
+### Activating Changes
+
+- Click on the shopping cart icon and select Commit Changes.
+
+- A confirmation alert will indicate successful deployment.
+
+### Verifying Deployment
+
+- Navigate to: Monitoring Tree → Deployments → Application Management
+
+- Verify the application status: STATE_PREPARED → Successfully deployed
+
+### Starting the Resource Adapter
+
+- Start the application by selecting Servicing all requests.
+
+- After successful startup, the status will change to: STATE_ACTIVE

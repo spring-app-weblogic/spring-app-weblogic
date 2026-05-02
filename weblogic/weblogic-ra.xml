@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weblogic-connector xmlns="http://xmlns.oracle.com/weblogic/weblogic-connector"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-connector 
+                    http://xmlns.oracle.com/weblogic/weblogic-connector/1.5/weblogic-connector.xsd">
+
+    <jndi-name>eis/mq/WMQRA</jndi-name>
+    <!-- 1. OVERRIDE RESOURCE ADAPTER BEAN (GLOBAL) PROPERTIES -->
+    <properties>
+        <property>
+            <!-- Must match the config-property-name in ra.xml -->
+            <name>traceLevel</name>
+            <!-- Your custom overriding value -->
+            <value>3</value>
+        </property>
+    </properties>
+
+    <admin-objects>
+        <admin-object-group>
+            <admin-object-interface>jakarta.jms.Queue</admin-object-interface>
+            <admin-object-instance>
+                <jndi-name>jms/mq/devqueue1</jndi-name>
+                <properties>
+                    <property>
+                        <name>baseQueueName</name>
+                        <value>DEV.QUEUE.1</value>   <!-- exact MQ queue name on QM -->
+                    </property>
+                </properties>
+            </admin-object-instance>
+            <admin-object-instance>
+                <jndi-name>jms/mq/devqueue2</jndi-name>
+                <properties>
+                    <property>
+                        <name>baseQueueName</name>
+                        <value>DEV.QUEUE.2</value>   <!-- exact MQ queue name on QM -->
+                    </property>
+                </properties>
+            </admin-object-instance>
+            <admin-object-instance>
+                <jndi-name>jms/mq/devqueue3</jndi-name>
+                <properties>
+                    <property>
+                        <name>baseQueueName</name>
+                        <value>DEV.QUEUE.3</value>   <!-- exact MQ queue name on QM -->
+                    </property>
+                </properties>
+            </admin-object-instance>
+            <admin-object-instance>
+                <jndi-name>jms/mq/deverrorqueue</jndi-name>
+                <properties>
+                    <property>
+                        <name>baseQueueName</name>
+                        <value>DEV.ERROR.QUEUE</value>   <!-- exact MQ queue name on QM -->
+                    </property>
+                </properties>
+            </admin-object-instance>
+        </admin-object-group>
+    </admin-objects>
+
+    <outbound-resource-adapter>
+        <connection-definition-group>
+            <!-- Must match the connectionfactory-interface in ra.xml -->
+            <connection-factory-interface>jakarta.jms.ConnectionFactory</connection-factory-interface>
+            
+            <!-- 2. OVERRIDE OUTBOUND CONNECTION PROPERTIES (GROUP LEVEL) -->
+            <default-connection-properties>
+                <pool-params>
+                    <initial-capacity>15</initial-capacity>
+                    <max-capacity>50</max-capacity>
+                </pool-params>
+                <transaction-support>XATransaction</transaction-support>
+                <properties>
+                    <property>
+                        <name>hostName</name>
+                        <value>localhost</value>
+                    </property>
+                    <property>
+                        <name>port</name>
+                        <value>1414</value>
+                    </property>
+                    <property>
+                        <name>queueManager</name>
+                        <value>QM1</value>
+                    </property>
+                    <property>
+                        <name>channel</name>
+                        <value>DEV.APP.SVRCONN</value>
+                    </property>
+                    <property>
+                        <name>username</name>
+                        <value>app</value>
+                    </property>
+                    <property>
+                        <name>password</name>
+                        <value>Pass@4321</value>
+                    </property>
+                    <property>
+                        <name>transportType</name>
+                        <value>CLIENT</value>
+                    </property>
+                </properties>
+            </default-connection-properties>
+
+            <!-- 3. DEFINE INDIVIDUAL JNDI INSTANCES -->
+            <connection-instance>
+                <jndi-name>eis/wmq/ConnectionFactory</jndi-name>
+            </connection-instance>
+        </connection-definition-group>
+        
+    </outbound-resource-adapter>
+
+</weblogic-connector>
