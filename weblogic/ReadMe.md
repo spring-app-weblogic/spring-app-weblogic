@@ -125,8 +125,6 @@ config.cmd
 
 NOTE: The above Non-SSL configurations are only for Testing Purpose for Production use we need to use SSL.
 
----
-
 ### Advanced Configuration
 
 Select the following options:
@@ -136,8 +134,6 @@ Select the following options:
 - Topology
 - Deployments and Services
 - File Store
-
----
 
 ### Administrator Server Configuration
 
@@ -149,15 +145,11 @@ Select the following options:
   - 7001 (Non-SSL for testing)
   - SSL port for production
 
----
-
 ### Node Manager Configuration
 
 - Use custom path (not inside Oracle Home or Domain)
 - Credentials:
   - `nodemgr / PassWord@123`
-
----
 
 ### Managed Server Configuration
 
@@ -168,23 +160,17 @@ Select the following options:
   - 7003 (Non-SSL for testing)
   - SSL port for production
 
----
-
 ### Cluster Configuration
 
 - Ignore if not using clustering
 - If using Load Balancer:
   - Configure cluster for routing requests
 
----
-
 ### Server Template
 
 - Create template:
   - Name: `ServerTemplate_1`
   - Configure Non-SSL port
-
----
 
 ### Machine Configuration
 
@@ -196,21 +182,15 @@ Select the following options:
   - Admin Server
   - Managed Servers
 
----
-
 ### Service Targeting
 
 - Map services to Managed Servers
   - Example: JMS Service → Managed Server
 
----
-
 ### File Store Configuration
 
 - Set Synchronous Write Policy:
   - Direct-Write
-
----
 
 ### Domain Creation Completion
 
@@ -238,8 +218,6 @@ Run:
 startNodeManager.cmd
 ```
 
----
-
 ### Start Admin Server
 
 Navigate to:
@@ -256,15 +234,11 @@ startWebLogic.cmd
 
 - Enter Admin credentials when prompted
 
----
-
 ### Accessing Admin Console
 
 - Use WebLogic Remote Console (Version 3.0.3)
 - Login with Admin credentials
 - Connect to Admin Server
-
----
 
 ### Starting Managed Server
 
@@ -275,21 +249,19 @@ startWebLogic.cmd
 
 > Once started, it will be visible in Node Manager console
 
----
-
 ### Summary Diagram (Startup Flow)
 
 ```
 User → Node Manager → Admin Server → Managed Servers
 ```
 
----
-
 ### Notes
 
 - Always keep domain path separate from Oracle Home
 - Use SSL in production environments
 - Node Manager is essential for centralized control
+
+---
 
 ## Oracle Data Source Configuration
 
@@ -328,8 +300,6 @@ User → Node Manager → Admin Server → Managed Servers
 - Test the configuration after creation
 - If successful, a **green check mark** will be displayed
 
----
-
 ### Connection Pool Configuration
 
 Configure the following connection pool properties based on environment requirements (UAT / Production):
@@ -342,6 +312,8 @@ Configure the following connection pool properties based on environment requirem
 > Adjust these values according to application load and performance requirements.
 
 - Once all the changes are performed go to shopping cart icon and click on commit changes.
+
+---
 
 ## IBM MQ Resource Adapter Configuration
 
@@ -362,8 +334,6 @@ Configure the following connection pool properties based on environment requirem
   Also, note down the JNDI names for each queue, as they will be used in the Spring application.
 
 - For additional configuration parameters, refer to the `ra.xml` file present in the original JAR.
-
----
 
 ### Repackaging the Resource Adapter
 
