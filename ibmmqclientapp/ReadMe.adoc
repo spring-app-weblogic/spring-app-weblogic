@@ -17,7 +17,7 @@ groups appusr
 
 * Now create the queue manager with mqm user using the command: *crtmqm APPQM*, after creating the queue manager start the queue manager using the command *strmqm APPQM*
 
-* Now we should provide the below permissions to the OS group and Queue Manager created from command prompt using mqm user, here we are providing the queue name should start with *APP*, so create application queues with name starting with *APP*:
+* Now we should provide the below permissions to the OS group and Queue Manager created from command prompt using mqm user, here we are configuring that the application queue name should start with *APP*, so create application queues with name starting with *APP*:
 
 [source, bash]
 -----
@@ -26,7 +26,47 @@ setmqaut -m APPQM -t qmgr -g appgrp +connect +inq
 setmqaut -m APPQM -n APP.** -t queue -g appgrp +put +get +browse +inq
 -----
 
-* Here
+* Now we need to configure queue and channel details with respective security configurations in the above queue manager created:
+
+[source, bash]
+----
+
+## Queue Definitions
+DEFINE QLOCAL('APP.IN.QUEUE.1') REPLACE DEFPSIST(YES) MAXDEPTH(50000)
+
+DEFINE QLOCAL('APP.OUT.QUEUE.1') REPLACE DEFPSIST(YES) MAXDEPTH(50000)
+
+DEFINE QLOCAL('APP.RES.QUEUE.1') REPLACE DEFPSIST(YES) MAXDEPTH(50000)
+
+## Authentication Configuration
+DEFINE AUTHINFO('APP.AUTHINFO') AUTHTYPE(IDPWOS) CHCKCLNT(REQDADM) CHCKLOCL(OPTIONAL) ADOPTCTX(YES) REPLACE
+
+ALTER QMGR CONNAUTH('APP.AUTHINFO')
+
+REFRESH SECURITY(*) TYPE(CONNAUTH)
+
+## Server Connection Channel
+DEFINE CHANNEL('APP.SVRCONN') CHLTYPE(SVRCONN) MCAUSER('appusr') REPLACE
+
+SET CHLAUTH('*') TYPE(ADDRESSMAP) ADDRESS('*') USERSRC(NOACCESS) DESCR('Back-stop rule - Blocks everyone') ACTION(REPLACE)
+
+SET CHLAUTH('APP.SVRCONN') TYPE(ADDRESSMAP) ADDRESS('*') USERSRC(CHANNEL) CHCKCLNT(REQUIRED) DESCR('Allows connection via APP channel') ACTION(REPLACE)
+
+SET AUTHREC PRINCIPAL('appusr') OBJTYPE(QMGR) AUTHADD(CONNECT,INQ)
+
+SET AUTHREC PROFILE('APP.**') PRINCIPAL('appusr') OBJTYPE(QUEUE) AUTHADD(BROWSE,GET,INQ,PUT)
+
+ALTER QMGR SSLKEYR('')
+
+ALTER QMGR CERTLABL('')
+
+ALTER QMGR SSLFIPS(NO)
+
+REFRESH SECURITY(*) TYPE(SSL)
+
+----
+
+NOTE: In the above MCAUSER and PRINCIPAL, the above created OS User should be placed.
 
 
 
