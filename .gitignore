@@ -1,0 +1,78 @@
+# =========================
+# OS / System files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE files
+# =========================
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# Build directories (all submodules)
+# =========================
+**/target/
+**/build/
+**/out/
+
+# =========================
+# Maven
+# =========================
+.mvn/wrapper/maven-wrapper.jar
+
+# =========================
+# Gradle
+# =========================
+.gradle/
+**/.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# =========================
+# Spring Boot
+# =========================
+**/application-*.yml
+**/application-*.properties
+
+# (optional: keep example configs)
+!**/application-dev.yml
+!**/application-local.yml
+
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.swp
+*.swo
+
+# =========================
+# Node (if any frontend inside)
+# =========================
+**/node_modules/
+
+# =========================
+# Coverage / Reports
+# =========================
+**/coverage/
+**/reports/
+
+# =========================
+# Environment files
+# =========================
+.env
+.env.*
+
+# =========================
+# Docker (optional)
+# =========================
+**/*.tar

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="
+                 https://jakarta.ee/xml/ns/persistence
+                 https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="myAppPU" transaction-type="JTA">
+
+        <!-- Global JNDI name of the XA DataSource in WLS -->
+        <jta-data-source>jdbc/myappDS</jta-data-source>
+
+        <!-- Entity classes (optional when Spring scans packages automatically) -->
+        <class>com.app.db.entity.Employee</class>
+        <class>com.app.db.entity.Department</class>
+        <class>com.app.db.entity.FailMessage</class>
+                
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+        <properties>
+            <!-- Hibernate 6 JTA platform for WebLogic -->
+            <property name="hibernate.transaction.jta.platform"
+                      value="org.hibernate.engine.transaction.jta.platform.internal.WeblogicJtaPlatform"/>
+            <property name="hibernate.transaction.coordinator_class"
+                      value="jta"/>
+            <property name="hibernate.connection.handling_mode"
+                      value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION"/>
+
+            <!-- DDL – set to 'none' in production -->
+            <property name="hibernate.hbm2ddl.auto" value="none"/>
+        </properties>
+
+    </persistence-unit>
+
+</persistence>

@@ -1,0 +1,116 @@
+# Oracle WeLogic Installation and Configuration
+
+* Download the Oracle Weblogic Software which we get as *fmw_15.1.1.0.0_wls_generic.jar* file. Weblogic supports Java 17 and Java 21 versions.
+
+* Here we are using Java 21 version.
+
+* WebLogic Server has following Components:
+
+** Admin Server
+** Managed Server
+** Node Manager
+
+* In Production setup we need to install one Admin Server,  Multiple Managed Servers and Node Manager.
+
+* Every physical machine that runs ANY WebLogic server (Admin or Managed) should have ONE Node Manager running on it.
+
+* Node Manager is used to start Admin and Managed Server. Without Node Manager we need to login into each machine and start the services individually.
+
+* *Admin Console* GUI is provided by Admin Server where we can do deployments and DB and JMS Configurations.
+
+* Open the command prompt as administrator and execute the command *java -jar fmw_15.1.1.0.0_wls_generic.jar*, this will launch the Middleware Installer.
+
+* Now provide ORACLE_HOME patch where the components are installed. Then Click on Install.
+
+* After Installation is completed. Now go the weblogic\oracle_common\common\bin in the installation path and start configuration wizard using the below command:
+
+config.cmd
+
+## Domain Creation and COnfigurations
+
+* Using Configuration Wizard we should create the Domain on the Admin Server. Make sure Domain Path should be outside the Oracle Home path.
+
+* Here while creating the domain we need to add the extension which we would be using in the applications we are going to deploy. Here select *JMS extension* for working with JMS applications.
+
+* Now we need to create administrator account in Admin Server for Admin Console.*Example*: weblogic/PassWord@123
+
+* Select the Production Mode and Select the Disable Secure Mode and Listen on Non-SSL Port.
+
+* In the Advanced Configuration select Administrator Server, Node Manager, Topology, Deployments and Services, File Store.
+
+* Administrator Server Configuration:
+
+** Provide AdminServer Name
+
+** Listening Address: Select localhost for local deployments or All Local Addresses for better handling other addresses.
+
+** Select Non SSL Port (7001) for testing, for production select SSL Port.
+
+* Node Manager Configuration:
+
+** Select Custom path different from oracle home and domain path.
+
+** Select Credentials: nodemgr/PassWord@123
+
+* Managed Server Configuration
+
+** Provide Managed Server Name
+
+** Listening Address: Select localhost for local deployments or All Local Addresses for better handling other addresses.
+
+** Select Non SSL Port (7003) for testing, for production select SSL Port.
+
+* Ignore Cluster, if we use an load balancer, we need to provide it here, so that request is sent across manged servers configured.
+
+* Server Template: Create a Server Teamplste with Non SSL Port with name *ServerTemplate_1*
+
+* Machine: Create a Machine where we can configure the above created Admin and Managed Servers. Mention communication as Plain and address as localhost.
+
+* Now assign servers to Machines, both admin and managed servers to above created machine.
+
+* Now we can define which service can be configured on which Managed Server, here we can map JMS Service to Managed Server.
+
+* Select File store Synchronous Write Policy as Direct-Write
+
+* Now select create: which will provide admin console URL as below:
+
+http://localhost:7001/console
+
+
+## Starting Node Manager
+
+* Start the Node Manager, here we should start the node manager from the domain location which we created weblogic15\domain\bin, using the command: startNodeManager.cmd
+
+## Start Admin Server
+
+* Start the Admin Server, here we should start the Admin Server from the domain location which we created weblogic15\domain\bin, using the command: startWebLogic.cmd
+
+* Here while starting the server we need to provide administrator account credentials which we have created while installation.
+
+* To Access Admin Console we need to download the WebLogic Remote Console 3.0.3
+
+* Login into WebLogic Remote Console with Administrator Privileges and connect to Admin Server.
+
+* After Connecting to the Admin Server start the Managed Server using *Monitoring Tree* tab, under Environment and Servers. Once started Managed server will be started in Node Manager console.
+
+
+
+cd D:\Learning_Not_In_Sync\spring\weblogic15\domain\bin
+
+startNodeManager.cmd
+
+
+cd D:\Learning_Not_In_Sync\spring\weblogic15\domain\bin
+
+startWebLogic.cmd
+
+mvnw.cmd clean install -DskipTests
+
+
+
+## Spring MQ DB App
+
+* Here we will as below dependenices
+
+DEFINE QLOCAL('DEV.ERROR.QUEUE') REPLACE
+
