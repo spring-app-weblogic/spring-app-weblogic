@@ -13,6 +13,7 @@ This document provides step-by-step instructions for installing and configuring 
 - Supported Java Versions:
   - Java 17
   - Java 21
+- Install java and setup JAVA_HOME
 
 > This setup uses **Java 21**
 
@@ -58,7 +59,7 @@ WebLogic Server consists of the following components:
 ## Key Concepts
 
 - Each machine running WebLogic must have **one Node Manager**
-- Node Manager is used to start Admin and Managed Servers
+- Node Manager is used to remotely start Admin and Managed Servers, without Node Manager we need manually start them using scripts.
 - Without Node Manager, servers must be started manually on each machine
 - Admin Console (GUI) is provided by the Admin Server for:
   - Deployments
@@ -103,7 +104,7 @@ config.cmd
 ### Domain Setup
 
 - Create domain using Configuration Wizard
-- Domain path must be **outside ORACLE_HOME**
+- Domain path must be outside **ORACLE_HOME**
 
 ### Extensions
 
@@ -122,9 +123,11 @@ config.cmd
 - Disable Secure Mode
 - Use Non-SSL port
 
+NOTE: The above Non-SSL configurations are only for Testing Purpose for Production use we need to use SSL.
+
 ---
 
-## Advanced Configuration
+### Advanced Configuration
 
 Select the following options:
 
@@ -136,7 +139,7 @@ Select the following options:
 
 ---
 
-## Administrator Server Configuration
+### Administrator Server Configuration
 
 - Name: AdminServer
 - Listening Address:
@@ -148,7 +151,7 @@ Select the following options:
 
 ---
 
-## Node Manager Configuration
+### Node Manager Configuration
 
 - Use custom path (not inside Oracle Home or Domain)
 - Credentials:
@@ -156,7 +159,7 @@ Select the following options:
 
 ---
 
-## Managed Server Configuration
+### Managed Server Configuration
 
 - Provide server name
 - Listening Address:
@@ -167,7 +170,7 @@ Select the following options:
 
 ---
 
-## Cluster Configuration
+### Cluster Configuration
 
 - Ignore if not using clustering
 - If using Load Balancer:
@@ -175,7 +178,7 @@ Select the following options:
 
 ---
 
-## Server Template
+### Server Template
 
 - Create template:
   - Name: `ServerTemplate_1`
@@ -183,7 +186,7 @@ Select the following options:
 
 ---
 
-## Machine Configuration
+### Machine Configuration
 
 - Create Machine
   - Communication: Plain
@@ -195,21 +198,21 @@ Select the following options:
 
 ---
 
-## Service Targeting
+### Service Targeting
 
 - Map services to Managed Servers
   - Example: JMS Service → Managed Server
 
 ---
 
-## File Store Configuration
+### File Store Configuration
 
 - Set Synchronous Write Policy:
   - Direct-Write
 
 ---
 
-## Domain Creation Completion
+### Domain Creation Completion
 
 - Click Create
 - Admin Console URL:
@@ -255,7 +258,7 @@ startWebLogic.cmd
 
 ---
 
-## Accessing Admin Console
+### Accessing Admin Console
 
 - Use WebLogic Remote Console (Version 3.0.3)
 - Login with Admin credentials
@@ -263,7 +266,7 @@ startWebLogic.cmd
 
 ---
 
-## Starting Managed Server
+### Starting Managed Server
 
 - Navigate to:
   - Monitoring Tree
@@ -274,7 +277,7 @@ startWebLogic.cmd
 
 ---
 
-## Summary Diagram (Startup Flow)
+### Summary Diagram (Startup Flow)
 
 ```
 User → Node Manager → Admin Server → Managed Servers
@@ -282,8 +285,58 @@ User → Node Manager → Admin Server → Managed Servers
 
 ---
 
-## Notes
+### Notes
 
 - Always keep domain path separate from Oracle Home
 - Use SSL in production environments
 - Node Manager is essential for centralized control
+
+## Oracle Data Source Configuration
+
+1. Login to the **WebLogic Remote Console** and connect to the **Admin Server**.
+
+2. Navigate to: Edit Tree --> Services --> Data Sources
+
+3. Click on **New** and provide the following configuration:
+
+### Basic Configuration
+
+- **Name:** `myapp-oracle-datasource`
+- **JNDI Name:** `jdbc/myappDS`
+- **Targets:** Managed Server
+- **Data Source Type:** Generic Data Source
+
+### Database Configuration
+
+- **Database Type:** Oracle
+- **Database Driver:** Oracle Driver Thin XA for Application Continuity
+- **Database Name:** `<DB Name>`
+- **Hostname:** `<DB IP>`
+- **Port:** `<DB Listener Port>`
+
+### Credentials
+
+- **Username:** `<DB App Username>`
+- **Password:** `<DB App Password>`
+
+4. Click **Create** to complete the data source setup.
+
+---
+
+### Testing the Data Source
+
+- Test the configuration after creation
+- If successful, a **green check mark** will be displayed
+
+---
+
+### Connection Pool Configuration
+
+Configure the following connection pool properties based on environment requirements (UAT / Production):
+
+- Statement Cache Size
+- Initial Capacity
+- Maximum Capacity
+- Minimum Capacity
+
+> Adjust these values according to application load and performance requirements.
