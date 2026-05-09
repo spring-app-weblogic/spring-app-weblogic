@@ -31,7 +31,7 @@ public class IbmmqclientApplication {
     private static final String QUEUE_NAME = "DEV.QUEUE.1";
     private static final String APP_USER = "app";
     private static final String APP_PASSWORD = "Pass@4321";
-    private static final int n = 10;
+    private static final int n = 1;
     
     private QueueConnectionFactory factory;
     private QueueConnection connection;
@@ -99,6 +99,7 @@ public class IbmmqclientApplication {
                 message = transactionGenerator.generateMessage();
                 // Send a message
                 client.sendMessage(message);
+                //client.sendMessage("message");
             }
             
             // Receive a message

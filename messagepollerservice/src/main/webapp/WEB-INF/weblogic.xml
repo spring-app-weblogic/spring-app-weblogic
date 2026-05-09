@@ -7,7 +7,7 @@
     http://xmlns.oracle.com/weblogic/weblogic-web-app/1.9/weblogic-web-app.xsd">
 
   <!-- Context root: app accessible at http://host:port/myapp -->
-  <context-root>/mymydbapp</context-root>
+  <context-root>/messagepollerservice</context-root>
 
   <container-descriptor>
     <!-- CRITICAL: Tell WebLogic to use YOUR bundled libs, not its own -->

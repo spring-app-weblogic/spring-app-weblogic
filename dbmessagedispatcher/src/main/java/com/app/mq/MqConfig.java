@@ -6,14 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
-import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.support.destination.JndiDestinationResolver;
 import org.springframework.jndi.JndiObjectFactoryBean;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.jta.JtaTransactionManager;
 
 import jakarta.jms.ConnectionFactory;
 
@@ -47,24 +44,5 @@ public class MqConfig {
         return template;
     }
     
-    @Bean
-    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory jmsConnectionFactory, JtaTransactionManager jtaTransactionManager) 
-            throws NamingException {
-        DefaultJmsListenerContainerFactory factory = 
-            new DefaultJmsListenerContainerFactory();
-        
-        factory.setConnectionFactory(jmsConnectionFactory);
-        factory.setTransactionManager(jtaTransactionManager);
-        factory.setSessionTransacted(false);
-        factory.setConcurrency("3-10");
-        factory.setCacheLevel(DefaultMessageListenerContainer.CACHE_AUTO);
-        factory.setErrorHandler(t -> {
-            System.err.println("Error in JMS listener: " + t.getMessage());
-            t.printStackTrace();
-        });
-        factory.setDestinationResolver(new JndiDestinationResolver());
-        return factory;
-    }
-
 }
 

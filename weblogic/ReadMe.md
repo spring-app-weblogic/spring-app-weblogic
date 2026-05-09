@@ -202,7 +202,7 @@ Select the following options:
 
 ---
 
-## Starting Services
+## Starting WebLogic Services
 
 ### Start Node Manager
 
@@ -292,8 +292,6 @@ User → Node Manager → Admin Server → Managed Servers
 - **Password:** `<DB App Password>`
 
 4. Click **Create** to complete the data source setup.
-
----
 
 ### Testing the Data Source
 

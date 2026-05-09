@@ -1,12 +1,19 @@
 package com.app.service;
 
+import java.util.Objects;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.app.model.TransactionRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Component
@@ -17,31 +24,45 @@ public class MessageListener {
 
     @Autowired
     private FailMessageProcessor failMessageProcessor;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private ErrorQueueSender errorQueueSender;
+
+    private final static Logger logger = LoggerFactory.getLogger(MessageListener.class);
     
     @JmsListener(destination = "${app.mq.source.queue.jndi-name}", containerFactory = "jmsListenerContainerFactory")
-    @Transactional(transactionManager="jtaTransactionManager")
+    @Transactional(transactionManager="jtaTransactionManager", propagation=Propagation.REQUIRED)
     public void processOrder(@Payload String message) {
 
         String randomeString = UUID.randomUUID().toString();
         Thread.currentThread().setName(Thread.currentThread().getName() + "--" + randomeString);
 
-        System.out.println("Received data: " + message);
+        logger.info("Received data: {}", message);
 
-        String[] data = message.split("-");
+        TransactionRequest transaction = null;
         try {
-            switch (data.length) {
-                case 3 -> messageProcessor.processMessage(data[0], data[1], data[2]);
-                case 2 -> messageProcessor.processMessage(data[0], data[1], "S");
-                default -> throw new RuntimeException("Message Format is InCorrect");
-            }
+            
+            transaction = objectMapper.readValue(message, TransactionRequest.class);
+            messageProcessor.processMessage(transaction);
+
+            logger.info("Received Transaction: {} processing successfully", transaction.getTransactionId());
         } catch (Throwable e) {
-            System.out.println("Exception catched....");
-            switch (data.length) {
-                case 3, 2 -> failMessageProcessor.insertFailedMessage(data[0], data[1], e.getMessage());
-                default -> failMessageProcessor.sendToFailedQueue(message);
+            logger.info("Throwable Exception Occured", e);
+            if(Objects.isNull(transaction)) {
+                errorQueueSender.sendToFailedQueue(message);
+            } else {
+                try {
+                    failMessageProcessor.insertFailedMessage(transaction, e.getMessage());
+                } catch (Throwable exp) {
+                    errorQueueSender.sendToFailedQueue(message);
+                }    
             }
+            logger.info("Received Transaction: {} processing Failed", message);
         }
-        System.out.println("Received data: " + message + " processing successfully");
+        
     }
-    
+
 }

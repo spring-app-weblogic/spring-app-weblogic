@@ -12,9 +12,10 @@
         <jta-data-source>jdbc/myappDS</jta-data-source>
 
         <!-- Entity classes (optional when Spring scans packages automatically) -->
-        <class>com.app.db.entity.Employee</class>
-        <class>com.app.db.entity.Department</class>
-        <class>com.app.db.entity.FailMessage</class>
+        <class>com.app.db.entity.TransactionDtls</class>
+        <class>com.app.db.entity.TransactionFailDtls</class>
+        <class>com.app.db.entity.TransactionSndrDtls</class>
+        <class>com.app.db.entity.ErrorQueueDtls</class>
                 
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
 

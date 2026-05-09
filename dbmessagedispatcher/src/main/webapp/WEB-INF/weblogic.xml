@@ -7,13 +7,14 @@
     http://xmlns.oracle.com/weblogic/weblogic-web-app/1.9/weblogic-web-app.xsd">
 
   <!-- Context root: app accessible at http://host:port/myapp -->
-  <context-root>/mymydbapp</context-root>
+  <context-root>/dbmessagedispatcher</context-root>
 
   <container-descriptor>
     <!-- CRITICAL: Tell WebLogic to use YOUR bundled libs, not its own -->
     <prefer-application-packages>
       <package-name>org.springframework.*</package-name>
       <package-name>com.fasterxml.jackson.*</package-name>
+      <package-name>org.apache.logging.*</package-name>
       <package-name>org.slf4j.*</package-name>
       <package-name>ch.qos.logback.*</package-name>
       <package-name>org.apache.commons.*</package-name>

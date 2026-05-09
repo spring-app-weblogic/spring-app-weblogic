@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN">
+    <Properties>
+        <!-- Log Pattern -->
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n
+        </Property>
+        <!-- Log Directory -->
+        <Property name="LOG_DIR">D:/Learning_Not_In_Sync/spring/weblogic15/logs</Property>
+        <!-- Log File Name -->
+        <Property name="LOG_FILE">application.log</Property>
+    </Properties>
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- Rolling File Appender -->
+        <RollingFile
+                name="RollingFileAppender"
+                fileName="${LOG_DIR}/${LOG_FILE}"
+                filePattern="${LOG_DIR}/application-%d{yyyy-MM-dd}-%i.log.gz">
+
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!-- Roll every day -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <!-- Roll when file size exceeds -->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <!-- Keep maximum 30 rolled files -->
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- Application Logger -->
+        <Logger name="com.myapp" level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="RollingFileAppender"/>
+        </Logger>
+
+        <!-- Spring Transaction Logs -->
+        <Logger name="org.springframework.transaction" level="DEBUG"/>
+
+        <!-- WebLogic JTA Logs -->
+        <Logger name="weblogic.transaction" level="DEBUG"/>
+
+        <!-- IBM MQ Logs -->
+        <Logger name="com.ibm.mq" level="DEBUG"/>
+
+        <!-- Root Logger -->
+        <Root level="INFO">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="RollingFileAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>

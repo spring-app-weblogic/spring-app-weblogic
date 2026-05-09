@@ -5,34 +5,30 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.app.db.entity.FailMessage;
-import com.app.db.repository.FailMessageRepository;
+import com.app.db.entity.TransactionFailDtls;
+import com.app.db.repository.TransactionFailDtlsRepository;
+import com.app.model.TransactionRequest;
 
 @Component
 public class FailMessageProcessor {
 
     @Autowired
-    private FailMessageRepository failMessageRepository;
-
-    @Autowired
-    private MessageSender messageSender;
+    private TransactionFailDtlsRepository transactionFailDtlsRepository;
 
     @Transactional(transactionManager="jtaTransactionManager", propagation=Propagation.REQUIRES_NEW)
-    public void insertFailedMessage(String name, String department, String failureReason) {
-        FailMessage failMessage = new FailMessage();
-        failMessage.setDepartment(department);
-        failMessage.setName(name);
-        failMessage.setFailureReason(failureReason);
-        failMessageRepository.save(failMessage);
+    public void insertFailedMessage(TransactionRequest transactionRequest, String failureReason) {
+        TransactionFailDtls transactionFailDtlsMessage = new TransactionFailDtls();
+        transactionFailDtlsMessage.setAccountNumber(transactionRequest.getAccountNumber());
+        transactionFailDtlsMessage.setAmount(transactionRequest.getAmount());
+        transactionFailDtlsMessage.setDate(transactionRequest.getDate());
+        transactionFailDtlsMessage.setFailureReason(failureReason);
+        transactionFailDtlsMessage.setStatus(0);
+        transactionFailDtlsMessage.setTransactionId(transactionRequest.getTransactionId());
+        transactionFailDtlsRepository.save(transactionFailDtlsMessage);
     }
 
-    @Transactional(transactionManager="jtaTransactionManager", propagation=Propagation.REQUIRES_NEW)
-    public void sendToFailedQueue(String message) {
-        messageSender.sendToErrorQueue(message);
-    }
-
-    public boolean searchFailedMessage(String name, String department) {
-        int count = failMessageRepository.countByNameAndDepartment(name, department);
+    public boolean searchFailedMessage(String transactionId) {
+        long count = transactionFailDtlsRepository.countByTransactionId(transactionId);
         return count > 0;
     }
 
