@@ -106,8 +106,6 @@ startWebLogic.cmd
 
 mvnw.cmd clean install -DskipTests
 
-
-
 ## Spring MQ DB App
 
 * Here we will as below dependenices

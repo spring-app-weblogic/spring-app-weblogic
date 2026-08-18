@@ -1,0 +1,31 @@
+<!-- src/main/webapp/WEB-INF/weblogic.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
+<weblogic-web-app
+  xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-web-app
+    http://xmlns.oracle.com/weblogic/weblogic-web-app/1.9/weblogic-web-app.xsd">
+
+  <!-- Context root: app accessible at http://host:port/myapp -->
+  <context-root>/messagepollerservice</context-root>
+
+  <container-descriptor>
+    <!-- CRITICAL: Tell WebLogic to use YOUR bundled libs, not its own -->
+    <prefer-application-packages>
+      <package-name>org.springframework.*</package-name>
+      <package-name>com.fasterxml.jackson.*</package-name>
+      <package-name>org.slf4j.*</package-name>
+      <package-name>ch.qos.logback.*</package-name>
+      <package-name>org.apache.commons.*</package-name>
+      <package-name>javax.validation.*</package-name>
+      <package-name>jakarta.validation.*</package-name>
+      <package-name>org.hibernate.*</package-name>
+    </prefer-application-packages>
+
+    <!-- Prefer your bundled resources (logback.xml, etc.) -->
+    <prefer-application-resources>
+      <resource-name>META-INF/services/jakarta.*</resource-name>
+    </prefer-application-resources>
+  </container-descriptor>
+
+</weblogic-web-app>

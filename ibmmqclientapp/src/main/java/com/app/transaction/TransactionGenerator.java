@@ -1,7 +1,6 @@
 package com.app.transaction;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,8 @@ public class TransactionGenerator {
 
     private Transaction generateTransaction() {
         Transaction txn = new Transaction(
-            UUID.randomUUID().toString(),
+            //UUID.randomUUID().toString(),
+            "b0b74656-a1a6-4fcd-85d0-c3161655d8ed",
             faker.number().randomDouble(2, 100, 10000),
             faker.options().option( "PENDING"),
             LocalDate.now().toString(),

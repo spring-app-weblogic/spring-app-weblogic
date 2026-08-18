@@ -98,8 +98,8 @@ public class IbmmqclientApplication {
             for(int i = 0; i< n; i++ ) {
                 message = transactionGenerator.generateMessage();
                 // Send a message
-                client.sendMessage(message);
-                //client.sendMessage("message");
+                //client.sendMessage(message);
+                client.sendMessage("message");
             }
             
             // Receive a message

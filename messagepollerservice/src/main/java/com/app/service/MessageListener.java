@@ -25,13 +25,16 @@ public class MessageListener {
     @Autowired
     private FailMessageProcessor failMessageProcessor;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     private ErrorQueueSender errorQueueSender;
 
     private final static Logger logger = LoggerFactory.getLogger(MessageListener.class);
+
+    MessageListener(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
     
     @JmsListener(destination = "${app.mq.source.queue.jndi-name}", containerFactory = "jmsListenerContainerFactory")
     @Transactional(transactionManager="jtaTransactionManager", propagation=Propagation.REQUIRED)
